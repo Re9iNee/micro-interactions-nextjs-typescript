@@ -34,29 +34,45 @@ function HandsClappingIcon({ variant = "outline", className }: IconProps) {
 
 function ClapPage() {
   const [clapped, setClapped] = useState<boolean>(false);
+  const [clapCount, setClapCount] = useState<number>(0);
 
   return (
     <div className='min-h-screen flex flex-col justify-start items-center gap-8 p-4'>
       {/* Claps container -- copy this */}
       <div className='inline-flex gap-2 items-center'>
-        <div
-          className='text-3xl group cursor-pointer'
-          onClick={() => setClapped(true)}
-        >
-          <HandsClappingIcon
-            variant={clapped ? "solid" : "outline"}
-            className={cn("opacity-50 group-hover:opacity-100")}
-          />
+        <div className='p-2 rounded-full bg-white'>
+          <div
+            className='text-3xl group cursor-pointer'
+            onClick={() => {
+              setClapCount((prev) => prev + 1);
+              setClapped(true);
+            }}
+          >
+            <HandsClappingIcon
+              variant={clapped ? "solid" : "outline"}
+              className={cn("opacity-50 group-hover:opacity-100")}
+            />
+          </div>
         </div>
         {/* split every 3 decimals */}
         {showClaps && (
-          <span className='opacity-60 hover:opacity-100'>
-            {clapsCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          <span className='opacity-60 hover:opacity-100 select-none'>
+            {(clapsCount + clapCount)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </span>
         )}
       </div>
 
-      <button onClick={() => setClapped(false)}>Reset Clap</button>
+      <button
+        className='border border-black rounded-lg px-4'
+        onClick={() => {
+          setClapCount(0);
+          setClapped(false);
+        }}
+      >
+        Reset Clap
+      </button>
     </div>
   );
 }
