@@ -148,10 +148,6 @@ function Claps() {
   return (
     <Container>
       <div className='canvas'>
-        <div ref={totalCounterRef} id='totalCounter' className='total-counter'>
-          {TOTAL_COUNT + accCounter}
-        </div>
-
         <div
           id='clap'
           ref={clapRef}
