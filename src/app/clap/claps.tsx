@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import ClapsFilled from "./icons/claps-fill.svg";
 import ClapsOutlined from "./icons/claps-outline.svg";
@@ -11,23 +11,26 @@ const TOTAL_COUNT = 111;
 
 function Claps() {
   const [accCounter, setAccCounter] = useState<number>(0);
-  const particlesClasses = [
-    {
-      class: "pop-top",
-    },
-    {
-      class: "pop-top-left",
-    },
-    {
-      class: "pop-top-right",
-    },
-    {
-      class: "pop-bottom-right",
-    },
-    {
-      class: "pop-bottom-left",
-    },
-  ];
+  const particlesClasses = useMemo(
+    () => [
+      {
+        class: "pop-top",
+      },
+      {
+        class: "pop-top-left",
+      },
+      {
+        class: "pop-top-right",
+      },
+      {
+        class: "pop-bottom-right",
+      },
+      {
+        class: "pop-bottom-left",
+      },
+    ],
+    []
+  );
 
   const clapRef = useRef<HTMLDivElement>(null);
   const sonarClapRef = useRef<HTMLDivElement>(null);
@@ -37,7 +40,7 @@ function Claps() {
   const particles3Ref = useRef<HTMLDivElement>(null);
   const totalCounterRef = useRef<HTMLDivElement>(null);
 
-  const onClapClick = function () {
+  const onClapClick = useCallback(function () {
     clapRef.current?.classList.add("clicked");
     upClickCounter();
 
@@ -50,16 +53,16 @@ function Claps() {
     } else if (!particles3Ref.current?.classList.contains("animating")) {
       animateParticles(particles3Ref.current, 700);
     }
-  };
+  }, []);
 
-  const onClapHover = function () {
+  const onClapHover = useCallback(function () {
     sonarClapRef.current?.classList.add("hover-active");
     setTimeout(() => {
       sonarClapRef.current?.classList.remove("hover-active");
     }, 2000);
-  };
+  }, []);
 
-  function upClickCounter() {
+  const upClickCounter = useCallback(function () {
     setAccCounter((prev) => prev + 1);
 
     if (clickerCounterRef.current?.classList.contains("first-active")) {
@@ -68,9 +71,9 @@ function Claps() {
       runAnimationCycle(clickerCounterRef.current, "first-active");
     }
     runAnimationCycle(totalCounterRef.current, "fader");
-  }
+  }, []);
 
-  function runAnimationCycle(
+  const runAnimationCycle = useCallback(function (
     el: HTMLElement | null,
     className: string,
     duration?: number
@@ -88,9 +91,10 @@ function Claps() {
       void el.offsetWidth; // Trigger a reflow in between removing and adding the class name
       el.classList.add(className);
     }
-  }
+  },
+  []);
 
-  function runParticleAnimationCycle(
+  const runParticleAnimationCycle = useCallback(function (
     el: HTMLElement,
     className: string,
     duration: number
@@ -102,9 +106,13 @@ function Claps() {
         el.classList.remove(className);
       }, duration);
     }
-  }
+  },
+  []);
 
-  function animateParticles(particles: HTMLDivElement | null, dur: number) {
+  const animateParticles = useCallback(function (
+    particles: HTMLDivElement | null,
+    dur: number
+  ) {
     if (!particles) return;
 
     addRandomParticlesRotation(particles, MIN_DEG, MAX_DEG);
@@ -120,20 +128,22 @@ function Claps() {
     setTimeout(() => {
       particles.classList.remove("animating");
     }, dur);
-  }
+  },
+  []);
 
-  function getRandomInt(min: number, max: number): number {
+  const getRandomInt = useCallback(function (min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  }, []);
 
-  function addRandomParticlesRotation(
+  const addRandomParticlesRotation = useCallback(function (
     particlesEl: HTMLElement,
     minDeg: number,
     maxDeg: number
   ) {
     const randomRotationAngle = getRandomInt(minDeg, maxDeg) + "deg";
     particlesEl.style.transform = `rotate(${randomRotationAngle})`;
-  }
+  },
+  []);
 
   return (
     <Container>
